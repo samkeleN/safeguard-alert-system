@@ -1,9 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Navbar.css";
 import logo_light from "../../assets/logo-white.jpg";
 import logo_dark from "../../assets/logo-white.jpg";
-// import toggle_light from "../../assets/night.png";
-// import toggle_dark from "../../assets/day.png";
 
 interface NavbarProps {
   theme: string;
@@ -11,32 +9,49 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ theme, setTheme }) => {
-  // const toggleMode = () => {
-  //   setTheme(theme === "light" ? "dark" : "light");
-  // };
+  const [activeLink, setActiveLink] = useState<string>("");
+
+  useEffect(() => {
+    const path = window.location.pathname;
+    setActiveLink(path === "/" ? "home" : path.substring(1));
+  }, []);
+
+  const handleLinkClick = (link: string) => {
+    setActiveLink(link);
+  };
 
   return (
     <div className="navbar">
       <img src={theme === 'light' ? logo_light : logo_dark} alt="Logo" className="logo" />
       <ul className="nav-links">
         <li>
-          <a href="/">Home</a>
+          <a
+            href="/"
+            className={activeLink === "home" ? "active" : ""}
+            onClick={() => handleLinkClick("home")}
+          >
+            Home
+          </a>
         </li>
         <li>
-          <a href="/">About</a>
+          <a
+            href="/about"
+            className={activeLink === "about" ? "active" : ""}
+            onClick={() => handleLinkClick("about")}
+          >
+            About
+          </a>
         </li>
         <li>
-          <a href="/">Contact</a>
+          <a
+            href="/contact"
+            className={activeLink === "contact" ? "active" : ""}
+            onClick={() => handleLinkClick("contact")}
+          >
+            Contact
+          </a>
         </li>
       </ul>
-
-      {/* Toggle light mode and dark mode */}
-      {/* <img
-        onClick={toggleMode}
-        src={theme === 'light' ? toggle_light : toggle_dark}
-        alt="Toggle Icon"
-        className="toggle-icon"
-      /> */}
     </div>
   );
 };
