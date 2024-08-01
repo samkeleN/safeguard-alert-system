@@ -22,13 +22,20 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme }) => {
 
   return (
     <div className="navbar">
-      <img src={theme === 'light' ? logo_light : logo_dark} alt="Logo" className="logo" />
+      <img
+        src={theme === "light" ? logo_light : logo_dark}
+        alt="Logo"
+        className="logo"
+      />
+      <h2 className="topic">SafeGuard Alert System</h2>
       <ul className="nav-links">
         <li>
           <a
             href="/"
             className={activeLink === "home" ? "active" : ""}
-            onClick={() => handleLinkClick("home")}
+            onClick={() => {
+              handleLinkClick("home");
+            }}
           >
             Home
           </a>
@@ -49,6 +56,24 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme }) => {
             onClick={() => handleLinkClick("contact")}
           >
             Contact
+          </a>
+        </li>
+        <li>
+          <a
+            href="/dashboard"
+            className={activeLink === "dashboard" ? "active" : ""}
+            onClick={() => handleLinkClick("dashboard")}
+          >
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a
+            href="/signup"
+            className={activeLink === "signup" ? "active" : ""}
+            onClick={() => handleLinkClick("signup")}
+          >
+            SignUp
           </a>
         </li>
       </ul>

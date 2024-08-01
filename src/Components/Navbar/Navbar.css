@@ -8,7 +8,8 @@
   }
   
   .logo {
-    height: 40px;
+    height: 60px;
+    margin: 0;
   }
   
   .nav-links {
@@ -28,3 +29,7 @@
     border-bottom: 2px solid #000; /* Adjust this according to your theme */
   }
   
+  .topic {
+    font-size: 24px;
+    text-align: center;
+  }
