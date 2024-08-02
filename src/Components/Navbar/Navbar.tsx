@@ -73,7 +73,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme }) => {
             className={activeLink === "signup" ? "active" : ""}
             onClick={() => handleLinkClick("signup")}
           >
-            SignUp
+            Sign Up
           </a>
         </li>
       </ul>

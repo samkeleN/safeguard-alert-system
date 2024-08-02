@@ -36,13 +36,13 @@
   .header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 10px;
+    padding: 20px;
     background-color: #f5f5f5;
-  }
+    margin-top: -20px;
+   }
   
   .Dashboard {
-    font-size: 24px;
+    font-size: 30px;
   }
   
   .username {
