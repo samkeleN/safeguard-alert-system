@@ -14,14 +14,43 @@ const Dashboard = () => {
   const [name, setName] = useState<string>("");
   const [contact, setContact] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [activePage, setActivePage] = useState<string>("contacts");
+  const [error, setError] = useState<string>("");
+
+  const isValidName = (name: string) => /^[a-zA-Z\s]+$/.test(name);
+  const isValidContact = (contact: string) => /^\d{10}$/.test(contact);
 
   const handleAddContact = () => {
-    if (name && contact) {
-      setContacts([...contacts, { name, contact }]);
-      setName("");
-      setContact("");
-      setIsModalOpen(false);
+    if (contacts.length >= 2) {
+      setError("You can only add up to 2 contacts.");
+      return;
     }
+
+    if (!isValidName(name)) {
+      setError("Name must contain only characters.");
+      return;
+    }
+
+    if (!isValidContact(contact)) {
+      setError("Contact number must be exactly 10 digits.");
+      return;
+    }
+
+    if (contacts.some((c) => c.name === name)) {
+      setError("Contact name already exists.");
+      return;
+    }
+
+    if (contacts.some((c) => c.contact === contact)) {
+      setError("Contact number already exists.");
+      return;
+    }
+
+    setContacts([...contacts, { name, contact }]);
+    setName("");
+    setContact("");
+    setIsModalOpen(false);
+    setError(""); // Clear error message
   };
 
   const handleOpenModal = () => {
@@ -30,6 +59,52 @@ const Dashboard = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setError(""); // Clear error message when closing the modal
+  };
+
+  const handlePageChange = (page: string) => {
+    setActivePage(page);
+  };
+
+  const renderPageContent = () => {
+    switch (activePage) {
+      case "contacts":
+        return (
+          <div>
+            <div className="addcontacts">
+              <h1 className="contacts">Contacts</h1>
+              <button className="add" onClick={handleOpenModal}>
+                Add
+              </button>
+            </div>
+            <div className="contact-list">
+              <h2 className="lists">List of added Contacts</h2>
+              {contacts.map((contact, index) => (
+                <div key={index} className="contact-item">
+                  <p>Name: {contact.name}</p>
+                  <p>Contact: {contact.contact}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      case "history":
+        return (
+          <div>
+            <h2>History</h2>
+            <p>No history available.</p>
+          </div>
+        );
+      case "signout":
+        return (
+          <div>
+            <h2>Sign Out Page</h2>
+            <p>You have been signed out.</p>
+          </div>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -37,9 +112,24 @@ const Dashboard = () => {
       <div className="sidebar">
         <h2>Dashboard</h2>
         <ul>
-          <li>See Contacts</li>
-          <li>History</li>
-          <li>Sign Out</li>
+          <li
+            className={activePage === "contacts" ? "active" : ""}
+            onClick={() => handlePageChange("contacts")}
+          >
+            See Contacts
+          </li>
+          <li
+            className={activePage === "history" ? "active" : ""}
+            onClick={() => handlePageChange("history")}
+          >
+            History
+          </li>
+          <li
+            className={activePage === "signout" ? "active" : ""}
+            onClick={() => handlePageChange("signout")}
+          >
+            Sign Out
+          </li>
         </ul>
       </div>
       <div className="main-content">
@@ -47,21 +137,7 @@ const Dashboard = () => {
           <h1 className="Dashboard"></h1>
           <h1 className="username">Samkele Ndzululeka</h1>
         </div>
-        <div className="addcontacts">
-          <h1 className="contacts">Contacts</h1>
-          <button className="add" onClick={handleOpenModal}>
-            Add
-          </button>
-        </div>
-        <div className="contact-list">
-          <h2 className="lists">List of added Contacts</h2>
-          {contacts.map((contact, index) => (
-            <div key={index} className="contact-item">
-              <p>Name: {contact.name}</p>
-              <p>Contact: {contact.contact}</p>
-            </div>
-          ))}
-        </div>
+        {renderPageContent()}
         <Modal
           isOpen={isModalOpen}
           onRequestClose={handleCloseModal}
@@ -88,6 +164,7 @@ const Dashboard = () => {
             <button className="close" onClick={handleCloseModal}>
               Close
             </button>
+            {error && <p className="error">{error}</p>}
           </div>
         </Modal>
       </div>

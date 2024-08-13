@@ -1,131 +1,138 @@
 .dashboard-container {
-    display: flex;
-    height: 100vh;
-  }
-  
-  .sidebar {
-    width: 300px;
-    background-color: #333;
-    color: white;
-    padding: 0;
-  }
-  
-  .sidebar h2 {
-    margin-top: 40px;
-    text-align: left;
-    padding: 10px;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    border: 2px solid red;
-  }
-  
-  .sidebar ul li {
-    padding: 10px 10px;
-    cursor: pointer;
-  }
-  
-  .sidebar ul li:hover {
-    background-color: #555;
+  display: flex;
+  height: 100vh;
+}
 
-  }
-  
-  .main-content {
-    flex: 1;
-    padding: 20px;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px;
-    background-color: #f5f5f5;
-    margin-top: -20px;
-   }
-  
-  .username {
-    font-size: 18px;
-  }
-  
-  .addcontacts {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 0;
-  }
-  
-  .contacts {
-    font-size: 22px;
-  }
-  
-  .add {
-    padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .contact-list {
-    margin-top: 20px;
-  }
-  
-  .lists {
-    font-size: 20px;
-  }
-  
-  .contact-item {
-    padding: 10px;
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-  }
-  
-  .modal {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    right: auto;
-    bottom: auto;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    width: 300px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  }
-  
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.75);
-  }
-  
-  .contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .contact-form input {
-    padding: 10px;
-    font-size: 16px;
-  }
-  
-  .addcontact {
-    padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .close {
-    padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    background: #ccc;
-    margin-top: 10px;
-  }
-  
+.sidebar {
+  width: 300px;
+  background-color: #333;
+  color: white;
+  padding: 0;
+}
+
+.sidebar h2 {
+  margin-top: 40px;
+  text-align: left;
+  padding: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 20px 0;
+}
+
+.sidebar ul li {
+  padding: 10px 10px;
+  cursor: pointer;
+}
+
+.sidebar ul li:hover {
+  background-color: #555;
+}
+
+.sidebar ul li.active {
+  background-color: #555; /* Highlight color for the active page */
+  font-weight: bold; /* Optional: Make active item bold */
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px;
+  background-color: #f5f5f5;
+  margin-top: -20px;
+}
+
+.username {
+  font-size: 18px;
+}
+
+.addcontacts {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.contacts {
+  font-size: 22px;
+}
+
+.add {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.contact-list {
+  margin-top: 20px;
+}
+
+.lists {
+  font-size: 20px;
+}
+
+.contact-item {
+  padding: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contact-form input {
+  padding: 10px;
+  font-size: 16px;
+}
+
+.addcontact {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.close {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #ccc;
+  margin-top: 10px;
+}
+.error {
+  color: red;
+  margin-top: 10px;
+}
