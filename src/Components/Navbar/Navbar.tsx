@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./Navbar.css";
-import logo_light from "../../assets/logo-white.jpg";
-import logo_dark from "../../assets/logo-white.jpg";
 
 interface NavbarProps {
   theme: string;
   setTheme: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ theme, setTheme }) => {
+const Navbar: React.FC<NavbarProps> = ({  }) => {
   const [activeLink, setActiveLink] = useState<string>("");
 
   useEffect(() => {
@@ -22,11 +20,6 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme }) => {
 
   return (
     <div className="navbar">
-      <img
-        src={theme === "light" ? logo_light : logo_dark}
-        alt="Logo"
-        className="logo"
-      />
       <h2 className="topic">SafeGuard Alert System</h2>
       <ul className="nav-links">
         <li>

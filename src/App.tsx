@@ -2,11 +2,11 @@ import React from "react";
 import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./Components/Navbar/Navbar";
-import Home from "./Components/Home";
-import AboutPage from "./Components/AboutPage";
-import Contact from "./Components/Contact";
-import Dashboard from "./Components/Dashboard";
-import SignUp from "./Components/SignUp";
+import Home from "./Components/Home/Home";
+import AboutPage from "./Components/About/AboutPage";
+import Contact from "./Components/Contacts/Contact";
+import Dashboard from "./Components/Dashboard/Dashboard";
+import SignUp from "./Components/SignUp/SignUp";
 
 const App: React.FC = () => {
   const [theme, setTheme] = useState<string>("light");
