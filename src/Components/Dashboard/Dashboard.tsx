@@ -35,7 +35,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <div className="sidebar">
-        <h2>Menu</h2>
+        <h2>Dashboard</h2>
         <ul>
           <li>See Contacts</li>
           <li>History</li>
@@ -44,7 +44,7 @@ const Dashboard = () => {
       </div>
       <div className="main-content">
         <div className="header">
-          <h1 className="Dashboard">Dashboard</h1>
+          <h1 className="Dashboard"></h1>
           <h1 className="username">Samkele Ndzululeka</h1>
         </div>
         <div className="addcontacts">

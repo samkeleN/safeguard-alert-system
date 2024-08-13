@@ -40,11 +40,23 @@
   .header {
     display: flex;
     justify-content: space-between;
+<<<<<<< HEAD:src/Components/Dashboard/Dashboard.css
     align-items: center;
     padding: 18px;
+=======
+    padding: 20px;
+>>>>>>> 140a05e9ccc5dce2556454b560ec65655e854f3f:src/Components/Dashboard.css
     background-color: #f5f5f5;
+    margin-top: -20px;
+   }
+  
+<<<<<<< HEAD:src/Components/Dashboard/Dashboard.css
+=======
+  .Dashboard {
+    font-size: 30px;
   }
   
+>>>>>>> 140a05e9ccc5dce2556454b560ec65655e854f3f:src/Components/Dashboard.css
   .username {
     font-size: 18px;
   }

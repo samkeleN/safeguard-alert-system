@@ -66,7 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({  }) => {
             className={activeLink === "signup" ? "active" : ""}
             onClick={() => handleLinkClick("signup")}
           >
-            SignUp
+            Sign Up
           </a>
         </li>
       </ul>
