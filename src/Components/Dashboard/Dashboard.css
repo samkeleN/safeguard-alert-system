@@ -19,7 +19,6 @@
   .sidebar ul {
     list-style: none;
     border: 2px solid red;
-    /* width: 100%; */
   }
   
   .sidebar ul li {
