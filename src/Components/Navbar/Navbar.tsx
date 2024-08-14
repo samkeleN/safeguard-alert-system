@@ -6,7 +6,7 @@ interface NavbarProps {
   setTheme: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Navbar: React.FC<NavbarProps> = ({  }) => {
+const Navbar: React.FC<NavbarProps> = () => {
   const [activeLink, setActiveLink] = useState<string>("");
 
   useEffect(() => {
