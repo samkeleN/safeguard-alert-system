@@ -8,6 +8,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = () => {
   const [activeLink, setActiveLink] = useState<string>("");
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -16,19 +17,21 @@ const Navbar: React.FC<NavbarProps> = () => {
 
   const handleLinkClick = (link: string) => {
     setActiveLink(link);
+    setIsMenuOpen(false); // Close the menu on link click
   };
 
   return (
     <div className="navbar">
       <h2 className="topic">SafeGuard Alert System</h2>
-      <ul className="nav-links">
+      <button className="menu-icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        &#x2630; {/* Hamburger icon */}
+      </button>
+      <ul className={`nav-links ${isMenuOpen ? "active" : ""}`}>
         <li>
           <a
             href="/"
             className={activeLink === "home" ? "active" : ""}
-            onClick={() => {
-              handleLinkClick("home");
-            }}
+            onClick={() => handleLinkClick("home")}
           >
             Home
           </a>
@@ -40,15 +43,6 @@ const Navbar: React.FC<NavbarProps> = () => {
             onClick={() => handleLinkClick("about")}
           >
             About
-          </a>
-        </li>
-        <li>
-          <a
-            href="/contact"
-            className={activeLink === "contact" ? "active" : ""}
-            onClick={() => handleLinkClick("contact")}
-          >
-            Contact
           </a>
         </li>
         <li>

@@ -1,35 +1,71 @@
 /* Navbar.css */
 
 .navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-  }
-  
-  .logo {
-    height: 60px;
-    margin: 0;
-  }
-  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: rgb(228, 224, 224); 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  z-index: 1000; 
+}
+
+.topic {
+  font-size: 24px;
+  text-align: center;
+}
+
+/* Menu icon */
+.menu-icon {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  display: none; /* Hide by default */
+}
+
+/* Nav links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #000; /* Adjust this according to your theme */
+  padding-bottom: 5px;
+  transition: border-bottom 0.3s;
+}
+
+.nav-links li a.active {
+  border-bottom: 2px solid #000; /* Adjust this according to your theme */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
   .nav-links {
-    list-style: none;
     display: flex;
-    gap: 20px;
+    flex-direction: column;
+    position: absolute;
+    top: 50px; /* Adjust this based on navbar height */
+    left: 0;
+    background-color: rgb(228, 224, 224);
+    width: 100%;
+    padding: 10px 0;
+    border-top: 1px solid #ccc;
+    display: none; /* Hide by default */
   }
-  
-  .nav-links li a {
-    text-decoration: none;
-    color: #000; /* Adjust this according to your theme */
-    padding-bottom: 5px;
-    transition: border-bottom 0.3s;
+
+  .nav-links.active {
+    display: flex; /* Show when active */
   }
-  
-  .nav-links li a.active {
-    border-bottom: 2px solid #000; /* Adjust this according to your theme */
+
+  .menu-icon {
+    display: block; /* Show the menu icon on mobile */
   }
-  
-  .topic {
-    font-size: 24px;
-    text-align: center;
-  }
+}
