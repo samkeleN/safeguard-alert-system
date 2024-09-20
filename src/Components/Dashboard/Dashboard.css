@@ -1,24 +1,27 @@
 .dashboard-container {
   display: flex;
+  margin-top: 50px;
   height: 100vh;
+  /* border: 2px solid red; */
 }
 
 .sidebar {
   width: 300px;
   background-color: #333;
   color: white;
-  padding: 0;
+  
 }
 
 .sidebar h2 {
-  margin-top: 40px;
-  text-align: left;
-  padding: 10px;
+  margin-top: 15px;
+  margin-right: 200px;
+  padding: 10px 20px;
 }
 
 .sidebar ul {
-  list-style: none;
-  padding: 20px 0;
+  padding: 30px 0;
+  margin: 0;
+  /* border: 2px solid red; */
 }
 
 .sidebar ul li {
@@ -33,6 +36,8 @@
 .sidebar ul li.active {
   background-color: #555; /* Highlight color for the active page */
   font-weight: bold; /* Optional: Make active item bold */
+  height: 50px;
+  text-align: center;
 }
 
 .main-content {

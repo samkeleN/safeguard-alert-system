@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Navbar.css";
+import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import Firebase auth functions
 
 interface NavbarProps {
   theme: string;
@@ -9,10 +10,24 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = () => {
   const [activeLink, setActiveLink] = useState<string>("");
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
+    const auth = getAuth(); // Get Firebase Auth instance
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // Check if user is signed in or not
+      if (user) {
+        setIsAuthenticated(true); // User is signed in
+      } else {
+        setIsAuthenticated(false); // No user is signed in
+      }
+    });
+
     const path = window.location.pathname;
     setActiveLink(path === "/" ? "home" : path.substring(1));
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
   }, []);
 
   const handleLinkClick = (link: string) => {
@@ -45,24 +60,28 @@ const Navbar: React.FC<NavbarProps> = () => {
             About
           </a>
         </li>
-        <li>
-          <a
-            href="/dashboard"
-            className={activeLink === "dashboard" ? "active" : ""}
-            onClick={() => handleLinkClick("dashboard")}
-          >
-            Dashboard
-          </a>
-        </li>
-        <li>
-          <a
-            href="/signup"
-            className={activeLink === "signup" ? "active" : ""}
-            onClick={() => handleLinkClick("signup")}
-          >
-            Sign Up
-          </a>
-        </li>
+        {isAuthenticated && ( // Conditionally render the Dashboard link if the user is authenticated
+          <li>
+            <a
+              href="/dashboard"
+              className={activeLink === "dashboard" ? "active" : ""}
+              onClick={() => handleLinkClick("dashboard")}
+            >
+              Dashboard
+            </a>
+          </li>
+        )}
+        {!isAuthenticated && (
+          <li>
+            <a
+              href="/signup"
+              className={activeLink === "signup" ? "active" : ""}
+              onClick={() => handleLinkClick("signup")}
+            >
+              Sign Up
+            </a>
+          </li>
+        )}
       </ul>
     </div>
   );

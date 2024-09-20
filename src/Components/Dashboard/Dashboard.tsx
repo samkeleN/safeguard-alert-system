@@ -1,6 +1,8 @@
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import "./Dashboard.css";
-import { useState } from "react";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"; // Import Firebase auth methods
+import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
 
 interface Contact {
   name: string;
@@ -16,6 +18,22 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<string>("contacts");
   const [error, setError] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string | null>(null); // State to store user email
+
+  const navigate = useNavigate(); // For navigating to home after sign-out
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserEmail(user.email); // Set the user's email when signed in
+      } else {
+        setUserEmail(null); // Clear email if no user is signed in
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup on component unmount
+  }, []);
 
   const isValidName = (name: string) => /^[a-zA-Z\s]+$/.test(name);
   const isValidContact = (contact: string) => /^\d{10}$/.test(contact);
@@ -64,6 +82,17 @@ const Dashboard = () => {
 
   const handlePageChange = (page: string) => {
     setActivePage(page);
+  };
+
+  const handleSignOut = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        navigate("/"); // Redirect to home after sign out
+      })
+      .catch((error) => {
+        console.error("Error signing out: ", error);
+      });
   };
 
   const renderPageContent = () => {
@@ -126,7 +155,7 @@ const Dashboard = () => {
           </li>
           <li
             className={activePage === "signout" ? "active" : ""}
-            onClick={() => handlePageChange("signout")}
+            onClick={handleSignOut} // Call handleSignOut on click
           >
             Sign Out
           </li>
@@ -135,7 +164,7 @@ const Dashboard = () => {
       <div className="main-content">
         <div className="header">
           <h1 className="Dashboard"></h1>
-          <h1 className="username">Samkele Ndzululeka</h1>
+          <h1 className="username">{userEmail ? userEmail : "No user"}</h1> {/* Show user's email */}
         </div>
         {renderPageContent()}
         <Modal

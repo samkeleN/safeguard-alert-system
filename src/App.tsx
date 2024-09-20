@@ -6,6 +6,7 @@ import Home from "./Components/Home/Home";
 import AboutPage from "./Components/About/AboutPage";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import SignUp from "./Components/SignUp/SignUp";
+import Login from "./Components/SignUp/Login";
 
 const App: React.FC = () => {
   const [theme, setTheme] = useState<string>("light");
@@ -19,6 +20,7 @@ const App: React.FC = () => {
 
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );
