@@ -3,6 +3,9 @@ import Modal from "react-modal";
 import "./Dashboard.css";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"; // Import Firebase auth methods
 import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
+import { ref, onValue } from "firebase/database"; // Import Firebase database methods
+import { db } from "../../../Firebase"; // Import Firebase configuration
+import ContactForm from "./Contacts"; // Import the ContactForm component
 
 interface Contact {
   name: string;
@@ -13,8 +16,6 @@ Modal.setAppElement("#root");
 
 const Dashboard = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [name, setName] = useState<string>("");
-  const [contact, setContact] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<string>("contacts");
   const [error, setError] = useState<string>("");
@@ -22,6 +23,7 @@ const Dashboard = () => {
 
   const navigate = useNavigate(); // For navigating to home after sign-out
 
+  // Firebase Authentication listener for user login state
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -35,22 +37,22 @@ const Dashboard = () => {
     return () => unsubscribe(); // Cleanup on component unmount
   }, []);
 
-  const isValidName = (name: string) => /^[a-zA-Z\s]+$/.test(name);
-  const isValidContact = (contact: string) => /^\d{10}$/.test(contact);
+  // Firebase Database listener to read contacts
+  useEffect(() => {
+    const contactRef = ref(db, "/contacts"); // Firebase database reference to the contacts
+    onValue(contactRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const contactList = Object.values(data) as Contact[]; // Convert the object to an array of contacts
+        setContacts(contactList); // Update the contacts state
+      }
+    });
+  }, []); // This will run once on component mount
 
-  const handleAddContact = () => {
+  // Function to handle adding a new contact (locally, since we are reading from Firebase)
+  const handleAddContact = (name: string, contact: string) => {
     if (contacts.length >= 2) {
       setError("You can only add up to 2 contacts.");
-      return;
-    }
-
-    if (!isValidName(name)) {
-      setError("Name must contain only characters.");
-      return;
-    }
-
-    if (!isValidContact(contact)) {
-      setError("Contact number must be exactly 10 digits.");
       return;
     }
 
@@ -65,8 +67,6 @@ const Dashboard = () => {
     }
 
     setContacts([...contacts, { name, contact }]);
-    setName("");
-    setContact("");
     setIsModalOpen(false);
     setError(""); // Clear error message
   };
@@ -173,28 +173,12 @@ const Dashboard = () => {
           className="modal"
           overlayClassName="overlay"
         >
-          <h2>Add Contact</h2>
-          <div className="contact-form">
-            <input
-              type="text"
-              placeholder="Enter name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Enter contact"
-              value={contact}
-              onChange={(e) => setContact(e.target.value)}
-            />
-            <button className="addcontact" onClick={handleAddContact}>
-              Add Contact
-            </button>
-            <button className="close" onClick={handleCloseModal}>
-              Close
-            </button>
-            {error && <p className="error">{error}</p>}
-          </div>
+          <ContactForm
+            onAddContact={handleAddContact}
+            onClose={handleCloseModal}
+            error={error}
+            setError={setError}
+          />
         </Modal>
       </div>
     </div>
