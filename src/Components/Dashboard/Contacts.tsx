@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { db } from "../../../Firebase"; // Assuming Firebase is configured in this file
 import { uid } from "uid";
 import { ref, set } from "firebase/database";
+import { getAuth, User } from "firebase/auth"; // Import Firebase auth
 
 interface ContactFormProps {
   onAddContact: (name: string, contact: string) => void;
@@ -18,12 +19,28 @@ const ContactForm: React.FC<ContactFormProps> = ({
 }) => {
   const [name, setName] = useState<string>("");
   const [contact, setContact] = useState<string>("");
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  // Get the currently authenticated user
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setCurrentUser(user); // Set the current user if authenticated
+      } else {
+        setCurrentUser(null); // Clear the user if not authenticated
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const writeToDatabase = (name: string, contact: string) => {
     const uuid = uid(); // Unique identifier for each contact
     set(ref(db, `/contacts/${uuid}`), {
       name,
       contact,
+      user: currentUser?.email, // Store the user's email along with contact
     });
   };
 
@@ -41,15 +58,20 @@ const ContactForm: React.FC<ContactFormProps> = ({
       return;
     }
 
-    // Write to Firebase Database
-    writeToDatabase(name, contact);
+    // Check if the user is authenticated
+    if (currentUser) {
+      // Write to Firebase Database for authorized users
+      writeToDatabase(name, contact);
 
-    // Clear inputs and error
-    onAddContact(name, contact);
-    setName("");
-    setContact("");
-    setError(""); // Clear error message
-    onClose(); // Close modal after adding
+      // Clear inputs and error
+      onAddContact(name, contact);
+      setName("");
+      setContact("");
+      setError(""); // Clear error message
+      onClose(); // Close modal after adding
+    } else {
+      setError("You are not authorized to add contacts.");
+    }
   };
 
   return (

@@ -10,6 +10,7 @@ import ContactForm from "./Contacts"; // Import the ContactForm component
 interface Contact {
   name: string;
   contact: string;
+  user: string; // Include user email in the Contact type
 }
 
 Modal.setAppElement("#root");
@@ -43,11 +44,18 @@ const Dashboard = () => {
     onValue(contactRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const contactList = Object.values(data) as Contact[]; // Convert the object to an array of contacts
-        setContacts(contactList); // Update the contacts state
+        const contactList: Contact[] = Object.values(data).map((contact: any) => ({
+          name: contact.name,
+          contact: contact.contact,
+          user: contact.user, // Ensure the user's email is included
+        }));
+
+        // Filter contacts by the logged-in user's email
+        const userContacts = contactList.filter(contact => contact.user === userEmail);
+        setContacts(userContacts); // Update the contacts state
       }
     });
-  }, []); // This will run once on component mount
+  }, [userEmail]); // Run when userEmail changes
 
   // Function to handle adding a new contact (locally, since we are reading from Firebase)
   const handleAddContact = (name: string, contact: string) => {
@@ -66,7 +74,7 @@ const Dashboard = () => {
       return;
     }
 
-    setContacts([...contacts, { name, contact }]);
+    setContacts([...contacts, { name, contact, user: userEmail || "" }]);
     setIsModalOpen(false);
     setError(""); // Clear error message
   };
