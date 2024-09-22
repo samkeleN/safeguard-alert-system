@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import Modal from "react-modal";
 import "./Dashboard.css";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"; // Import Firebase auth methods
-import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
-import { ref, onValue } from "firebase/database"; // Import Firebase database methods
-import { db } from "../../../Firebase"; // Import Firebase configuration
-import ContactForm from "./Contacts"; // Import the ContactForm component
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { ref, onValue, remove } from "firebase/database";
+import { db } from "../../../Firebase";
+import ContactForm from "./Contacts";
 
 interface Contact {
+  id: string; // Unique ID for each contact
   name: string;
   contact: string;
-  user: string; // Include user email in the Contact type
+  user: string;
 }
 
 Modal.setAppElement("#root");
@@ -20,63 +21,65 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<string>("contacts");
   const [error, setError] = useState<string>("");
-  const [userEmail, setUserEmail] = useState<string | null>(null); // State to store user email
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
-  const navigate = useNavigate(); // For navigating to home after sign-out
+  const navigate = useNavigate();
 
-  // Firebase Authentication listener for user login state
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUserEmail(user.email); // Set the user's email when signed in
+        setUserEmail(user.email);
       } else {
-        setUserEmail(null); // Clear email if no user is signed in
+        setUserEmail(null);
       }
     });
 
-    return () => unsubscribe(); // Cleanup on component unmount
+    return () => unsubscribe();
   }, []);
 
-  // Firebase Database listener to read contacts
   useEffect(() => {
-    const contactRef = ref(db, "/contacts"); // Firebase database reference to the contacts
+    const contactRef = ref(db, "/contacts");
     onValue(contactRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const contactList: Contact[] = Object.values(data).map((contact: any) => ({
-          name: contact.name,
-          contact: contact.contact,
-          user: contact.user, // Ensure the user's email is included
-        }));
+        const contactList: Contact[] = Object.entries(data).map(([id, contact]) => {
+          const typedContact = contact as Contact;
+          return {
+            id,
+            name: typedContact.name,
+            contact: typedContact.contact,
+            user: typedContact.user,
+          };
+        });
 
-        // Filter contacts by the logged-in user's email
         const userContacts = contactList.filter(contact => contact.user === userEmail);
-        setContacts(userContacts); // Update the contacts state
+        setContacts(userContacts);
       }
     });
-  }, [userEmail]); // Run when userEmail changes
+  }, [userEmail]);
 
-  // Function to handle adding a new contact (locally, since we are reading from Firebase)
   const handleAddContact = (name: string, contact: string) => {
     if (contacts.length >= 2) {
       setError("You can only add up to 2 contacts.");
       return;
     }
 
-    if (contacts.some((c) => c.name === name)) {
-      setError("Contact name already exists.");
-      return;
-    }
-
-    if (contacts.some((c) => c.contact === contact)) {
-      setError("Contact number already exists.");
-      return;
-    }
-
-    setContacts([...contacts, { name, contact, user: userEmail || "" }]);
+    const newContact = { name, contact, user: userEmail || "", id: "new-id" }; // Replace with actual ID generation
+    setContacts([...contacts, newContact]);
     setIsModalOpen(false);
-    setError(""); // Clear error message
+    setError("");
+  };
+
+  const handleDeleteContact = (id: string) => {
+    const contactRef = ref(db, `/contacts/${id}`);
+    remove(contactRef)
+      .then(() => {
+        setContacts(contacts.filter(contact => contact.id !== id));
+      })
+      .catch((error) => {
+        console.error("Error deleting contact: ", error);
+      });
   };
 
   const handleOpenModal = () => {
@@ -85,7 +88,7 @@ const Dashboard = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setError(""); // Clear error message when closing the modal
+    setError("");
   };
 
   const handlePageChange = (page: string) => {
@@ -96,7 +99,7 @@ const Dashboard = () => {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
-        navigate("/"); // Redirect to home after sign out
+        navigate("/");
       })
       .catch((error) => {
         console.error("Error signing out: ", error);
@@ -116,10 +119,11 @@ const Dashboard = () => {
             </div>
             <div className="contact-list">
               <h2 className="lists">List of added Contacts</h2>
-              {contacts.map((contact, index) => (
-                <div key={index} className="contact-item">
+              {contacts.map((contact) => (
+                <div key={contact.id} className="contact-item">
                   <p>Name: {contact.name}</p>
                   <p>Contact: {contact.contact}</p>
+                  <button onClick={() => handleDeleteContact(contact.id)}>Delete</button>
                 </div>
               ))}
             </div>
@@ -163,7 +167,7 @@ const Dashboard = () => {
           </li>
           <li
             className={activePage === "signout" ? "active" : ""}
-            onClick={handleSignOut} // Call handleSignOut on click
+            onClick={handleSignOut}
           >
             Sign Out
           </li>
@@ -172,7 +176,7 @@ const Dashboard = () => {
       <div className="main-content">
         <div className="header">
           <h1 className="Dashboard"></h1>
-          <h1 className="username">{userEmail ? userEmail : "No user"}</h1> {/* Show user's email */}
+          <h1 className="username">{userEmail ? userEmail : "No user"}</h1>
         </div>
         {renderPageContent()}
         <Modal

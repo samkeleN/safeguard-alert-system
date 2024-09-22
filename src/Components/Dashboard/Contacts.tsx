@@ -3,6 +3,7 @@ import { db } from "../../../Firebase"; // Assuming Firebase is configured in th
 import { uid } from "uid";
 import { ref, set } from "firebase/database";
 import { getAuth, User } from "firebase/auth"; // Import Firebase auth
+import "./Contacts.css";
 
 interface ContactFormProps {
   onAddContact: (name: string, contact: string) => void;
