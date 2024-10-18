@@ -3,14 +3,14 @@ import Modal from "react-modal";
 import "./Dashboard.css";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { ref, onValue, remove } from "firebase/database";
+import { ref, onValue, push, remove, set } from "firebase/database"; // Use push to create unique keys
 import { db } from "../../../Firebase";
 import ContactForm from "./Contacts";
 
 interface Contact {
-  id: string; // Unique ID for each contact
+  id: string;
   name: string;
-  contact: string;
+  contact: number; // Changed to number
   user: string;
 }
 
@@ -22,24 +22,31 @@ const Dashboard = () => {
   const [activePage, setActivePage] = useState<string>("contacts");
   const [error, setError] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [uid, setUid] = useState<string | null>(null); // Added to track user UID
 
   const navigate = useNavigate();
 
+  // Track authenticated user and their UID
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserEmail(user.email);
+        setUid(user.uid); // Get UID of authenticated user
       } else {
         setUserEmail(null);
+        setUid(null);
       }
     });
 
     return () => unsubscribe();
   }, []);
 
+  // Fetch contacts for the logged-in user
   useEffect(() => {
-    const contactRef = ref(db, "/contacts");
+    if (!uid) return; // Ensure there's a valid user UID
+
+    const contactRef = ref(db, `${uid}/NextOfKin`); // Use UID-based path for fetching contacts
     onValue(contactRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -53,34 +60,54 @@ const Dashboard = () => {
           };
         });
 
-        const userContacts = contactList.filter(contact => contact.user === userEmail);
-        setContacts(userContacts);
+        setContacts(contactList);
       }
     });
-  }, [userEmail]);
+  }, [uid]);
 
+  // Add contact and store it in Firebase under /uid/NextOfKin
   const handleAddContact = (name: string, contact: string) => {
     if (contacts.length >= 2) {
       setError("You can only add up to 2 contacts.");
       return;
     }
 
-    const newContact = { name, contact, user: userEmail || "", id: "new-id" }; // Replace with actual ID generation
-    setContacts([...contacts, newContact]);
+    if (uid) {
+      const newContactRef = push(ref(db, `${uid}/NextOfKin`)); // Use UID-based path
+      const contactNumber = parseInt(contact); // Ensure the contact is an integer
+
+      const newContact = {
+        name,
+        contact: contactNumber, // Save contact as an integer
+        user: userEmail || "",
+      };
+
+      set(newContactRef, newContact).catch((error: any) => {
+        console.error("Error adding contact: ", error);
+      }); // Write to Firebase
+    }
+
     setIsModalOpen(false);
     setError("");
   };
 
-  const handleDeleteContact = (id: string) => {
-    const contactRef = ref(db, `/contacts/${id}`);
+// Delete contact from Firebase and remove from UI
+const handleDeleteContact = (id: string) => {
+  if (uid) {
+    const contactRef = ref(db, `${uid}/NextOfKin/${id}`); // Use UID-based path
+
     remove(contactRef)
       .then(() => {
-        setContacts(contacts.filter(contact => contact.id !== id));
+        // Remove contact from the local state
+        setContacts(contacts.filter((contact) => contact.id !== id));
       })
       .catch((error) => {
         console.error("Error deleting contact: ", error);
+        setError("Failed to delete contact. Please try again.");
       });
-  };
+  }
+};
+
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
