@@ -74,6 +74,5 @@ The SafeGuard Alert System aims to:
 
 ## Contact
 **Samkele Ndzululeka**  
-Final-year Computer Engineering Student  
+Computer Engineering Graduate  
 GitHub: [samkeleN](https://github.com/samkeleN)
-
