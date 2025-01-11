@@ -2,6 +2,8 @@
 
 SafeGuard Alert System is a vehicle safety solution designed to reduce fatalities caused by delayed emergency responses. The system detects vehicle collisions, sends automated SOS alerts via SMS and phone calls, and integrates GPS technology for real-time location reporting. It also allows authenticated users to manage emergency contact information via Firebase.
 
+![alt text](image.png)![alt text](<Screenshot 2025-01-11 211437.png>)
+
 ## Features
 - **Collision Detection**: Reads impact data using an MPU6050 sensor.
 - **Automated Alerts**: Sends SMS and initiates a call via SIM800L module upon detecting a collision.
@@ -24,7 +26,6 @@ The SafeGuard Alert System aims to:
 - **LCD Display**
 - **Relay Module**
 - **Power Supply**
-![alt text](<WhatsApp Image 2024-10-27 at 14.51.14_88f07f7d.jpg>)
 
 ## How It Works
 1. **Collision Detection**: The MPU6050 sensor detects impact data.
@@ -34,7 +35,7 @@ The SafeGuard Alert System aims to:
    - Initiates a call to the first emergency contact.
 4. **Location Reporting**: The GPS module fetches the vehicle's real-time location and includes it in the SMS.
 5. **Contact Management**: Users can store, update, and delete emergency contacts through Firebase.
-![alt text](image.png)![alt text](<Screenshot 2025-01-11 211437.png>)
+
 ## System Workflow
 1. **Initialization**: The system starts and initializes the sensors and modules.
 2. **Collision Monitoring**: Continuously monitors impact data.
